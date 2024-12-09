@@ -9,6 +9,7 @@
     <title>Login | Brain Busters</title>
 </head>
 <body>
+
 <form action="" method="post" class="login">
     <h1 class="top-text">Brain Busters</h1>
     @csrf
