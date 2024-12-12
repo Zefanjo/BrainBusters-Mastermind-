@@ -9,10 +9,27 @@
     @vite('resources/css/app.css','resources/js/app.js')
 </head>
 <body>
-    <div class="container">
-<div class="button-box">
-
+<div class="top-text">
+     Hello
+    @auth
+        {{ auth()->user()->name }}
+    @endauth
 </div>
+<div class="container">
+    <div class="button-box">
+        <div class="buttons">
+            Start
+        </div>
+        <div class="buttons">
+            Scoreboard
+        </div>
+        <div class="buttons">
+            Rules
+        </div>
+        <div class="buttons">
+            Profile
+        </div>
     </div>
+</div>
 </body>
 </html>
