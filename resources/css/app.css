@@ -2,9 +2,13 @@
     box-sizing: border-box;
 }
 
+a {
+    text-decoration: none;
+}
+
 body {
     margin: 0;
-    background: whitesmoke;
+    background: linear-gradient(-3.25rad, white, gray) no-repeat fixed;
 }
 
 main {
@@ -20,18 +24,29 @@ main {
 }
 
 .button-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: column;
     height: 70vh;
     width: 30vw;
-    background-color: black;
+    background: linear-gradient(-3.25rad, white, gray) no-repeat fixed;
     margin-top: -20vh;
     border-radius: 4%;
+    color: white;
+    border: 1px solid black;
 }
 
 .buttons {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: white;
+    flex-direction: column;
+    height: 10vh;
+    width: 24vw;
+    border-radius: 10px;
+    border: black solid 2px;
+    background: linear-gradient(-3.25rad, white, gray) no-repeat fixed;
 }
 
 .top-text {

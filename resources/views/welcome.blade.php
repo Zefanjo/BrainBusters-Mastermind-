@@ -10,25 +10,17 @@
 </head>
 <body>
 <div class="top-text">
-     Hello
+    Hello
     @auth
         {{ auth()->user()->name }}
     @endauth
 </div>
 <div class="container">
     <div class="button-box">
-        <div class="buttons">
-            Start
-        </div>
-        <div class="buttons">
-            Scoreboard
-        </div>
-        <div class="buttons">
-            Rules
-        </div>
-        <div class="buttons">
-            Profile
-        </div>
+        <div class="buttons"><a href="login">Start</a></div>
+        <div class="buttons"><a href="login">Scoreboard</a></div>
+        <div class="buttons"><a href="login">Rules</a></div>
+        <div class="buttons"><a href="login">Profile</a></div>
     </div>
 </div>
 </body>
