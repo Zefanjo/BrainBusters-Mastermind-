@@ -17,3 +17,7 @@ Route::get('/login', function () {
 Route::get('/register', function () {
     return view('register');
 });
+
+Route::get('/scoreboard', function () {
+    return view('scoreboard');
+});
