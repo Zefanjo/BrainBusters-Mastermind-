@@ -17,3 +17,8 @@ Route::get('/login', function () {
 Route::get('/register', function () {
     return view('register');
 });
+
+use App\Http\Controllers\GameController;
+
+Route::post('/start-game', [GameController::class, 'startGame']);
+Route::post('/check-guess', [GameController::class, 'checkGuess']);
