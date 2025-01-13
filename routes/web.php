@@ -17,18 +17,3 @@ Route::get('/login', function () {
 Route::get('/register', function () {
     return view('register');
 });
-
-Route::get('/scoreboard', function () {
-    return view('scoreboard');
-});
-
-Route::get('/test', function () {
-    return view('test');
-});
-
-use App\Http\Controllers\GameController;
-
-Route::post('/start-game', [GameController::class, 'startGame']);
-Route::post('/check-guess', [GameController::class, 'checkGuess']);
-
-
