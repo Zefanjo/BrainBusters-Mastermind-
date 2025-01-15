@@ -10,7 +10,15 @@
 </head>
 <body>
     <div class="scoreboard">
-
+        <div class="name">
+            Naam
+        </div>
+        <div class="score">
+            Score
+        </div>
+        <div class="time">
+            Tijd
+        </div>
     </div>
 </body>
 </html>

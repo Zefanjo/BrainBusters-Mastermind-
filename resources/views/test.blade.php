@@ -15,6 +15,20 @@
         .guess-inputs {
             margin: 20px 0;
         }
+        .color-peg {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .peg {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            margin: 10px;
+            border: 1px solid #000;
+        }
     </style>
 </head>
 <body>
@@ -25,37 +39,140 @@
 
 <div>
     <h2>Pick colors for the pegs:</h2>
-
-    <!-- Peg 1 -->
-    <div id="peg1-color" class="color-peg" data-peg="1" style="display: inline-block; width: 50px; height: 50px; background-color: red;"></div>
-    <div id="peg2-color" class="color-peg" data-peg="2" style="display: inline-block; width: 50px; height: 50px; background-color: green;"></div>
-    <div id="peg3-color" class="color-peg" data-peg="3" style="display: inline-block; width: 50px; height: 50px; background-color: blue;"></div>
-    <div id="peg4-color" class="color-peg" data-peg="4" style="display: inline-block; width: 50px; height: 50px; background-color: yellow;"></div>
-    <div id="peg4-color" class="color-peg" data-peg="4" style="display: inline-block; width: 50px; height: 50px; background-color: black;"></div>
-    <div id="peg4-color" class="color-peg" data-peg="4" style="display: inline-block; width: 50px; height: 50px; background-color: white;"></div>
+    <div id="colorPalette">
+        <div class="color-peg" data-color="red" style="background-color: red;"></div>
+        <div class="color-peg" data-color="green" style="background-color: green;"></div>
+        <div class="color-peg" data-color="blue" style="background-color: blue;"></div>
+        <div class="color-peg" data-color="yellow" style="background-color: yellow;"></div>
+        <div class="color-peg" data-color="black" style="background-color: black;"></div>
+        <div class="color-peg" data-color="white" style="background-color: white;"></div>
+    </div>
 </div>
 
 <!-- Placeholder to show current guesses -->
 <h3>Your Guess:</h3>
 <div>
-    <div id="peg1" class="peg" style="display: inline-block; width: 50px; height: 50px;"></div>
-    <div id="peg2" class="peg" style="display: inline-block; width: 50px; height: 50px;"></div>
-    <div id="peg3" class="peg" style="display: inline-block; width: 50px; height: 50px;"></div>
-    <div id="peg4" class="peg" style="display: inline-block; width: 50px; height: 50px;"></div>
+    <div id="peg1" class="peg"></div>
+    <div id="peg2" class="peg"></div>
+    <div id="peg3" class="peg"></div>
+    <div id="peg4" class="peg"></div>
 </div>
 
-
+<!-- Table to show previous guesses and feedback -->
 <table border="1" style="margin: 0 auto; width: 60%; text-align: center;">
     <thead>
     <tr>
         <th>Turn</th>
-        <th>Guess</th>
+        <button id="checkGuess">Submit Guess</button>
+
         <th>Feedback</th>
     </tr>
     </thead>
-    <tbody id="guesses">
-
-    </tbody>
+    <tbody id="guesses"></tbody>
 </table>
+
+<script>
+    let selectedColor = null;
+
+    // Handle color selection
+    document.querySelectorAll('.color-peg').forEach(peg => {
+        peg.addEventListener('click', function () {
+            selectedColor = peg.dataset.color;
+            alert(`Selected color: ${selectedColor}`); // Debugging
+        });
+    });
+
+    // Handle peg coloring
+    document.querySelectorAll('.peg').forEach(peg => {
+        peg.addEventListener('click', function () {
+            if (selectedColor) {
+                peg.style.backgroundColor = selectedColor;
+            }
+        });
+    });
+
+    // Start game
+    document.getElementById('startGame').addEventListener('click', function () {
+        fetch('/start-game', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({})
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        }).then(data => {
+            alert(data.message); // Game started successfully
+        }).catch(error => {
+            console.error('Error starting game:', error);
+        });
+    });
+
+    // Check guess functionality (Add your own button for this if needed)
+    document.getElementById('checkGuess').addEventListener('click', function () {
+        const guess = Array.from(document.querySelectorAll('.peg')).map(peg => {
+            return peg.style.backgroundColor || null;
+        });
+
+        if (guess.includes(null)) {
+            alert('Please fill all the pegs before submitting your guess.');
+            return;
+        }
+
+        fetch('/check-guess', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ guess })
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        }).then(data => {
+            if (data.message) {
+                alert(data.message); // E.g., "You win!"
+            } else if (data.feedback) {
+                // Create a new table row for feedback
+                const feedbackRow = document.createElement('tr');
+
+                // Add the turn number (or timestamp)
+                const turnCell = document.createElement('td');
+                turnCell.textContent = new Date().toLocaleTimeString();
+                feedbackRow.appendChild(turnCell);
+
+                // Add the guess as colored boxes
+                const guessCell = document.createElement('td');
+                guess.forEach(color => {
+                    const colorBox = document.createElement('div');
+                    colorBox.style.backgroundColor = color;
+                    colorBox.style.width = '30px';
+                    colorBox.style.height = '30px';
+                    colorBox.style.display = 'inline-block';
+                    colorBox.style.margin = '0 5px';
+                    guessCell.appendChild(colorBox);
+                });
+                feedbackRow.appendChild(guessCell);
+
+                // Add the feedback (use symbols like `*` or `+`)
+                const feedbackCell = document.createElement('td');
+                feedbackCell.textContent = data.feedback; // Example: "****" or "***+"
+                feedbackRow.appendChild(feedbackCell);
+
+                // Append the row to the guesses table
+                document.getElementById('guesses').appendChild(feedbackRow);
+            }
+        }).catch(error => {
+            console.error('Error checking guess:', error);
+        });
+    });
+
+</script>
 </body>
 </html>

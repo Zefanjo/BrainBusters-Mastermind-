@@ -18,7 +18,7 @@
 <div class="container">
     <div class="button-box">
             <a href="test"><button class="buttons">Start</button></a>
-            <a href="login"><button class="buttons">Scoreboard</button></a>
+            <a href="scoreboard"><button class="buttons">Scoreboard</button></a>
             <a href="login"><button class="buttons">Rules</button></a>
             <a href="login"><button class="buttons">Profile</button></a>
     </div>

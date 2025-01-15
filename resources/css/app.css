@@ -59,5 +59,17 @@ main {
 }
 
 .scoreboard {
+    display: flex;
+    justify-content: space-evenly;
+    border: black solid 1px;
+    width: 60%;
+    height: 80%;
+}
 
+.score {
+    display: flex;
+    justify-content: center;
+    width: 34%;
+    border-right: black solid 1px;
+    border-left: black solid 1px;
 }
