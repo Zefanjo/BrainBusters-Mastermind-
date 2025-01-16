@@ -64,7 +64,8 @@
     <tr>
         <th>Turn</th>
         <button id="checkGuess">Submit Guess</button>
-
+        <button id="resetBoard">Clear Last Peg</button>
+        <th>Previous Guesses</th>
         <th>Feedback</th>
     </tr>
     </thead>
@@ -73,46 +74,38 @@
 
 <script>
     let selectedColor = null;
+    const filledPegs = []; // Stack to track the order of filled pegs
+    let guessCount = 0; // Counter for the number of guesses
+    const maxGuesses = 6; // Maximum allowed guesses
 
-    // Handle color selection
-    document.querySelectorAll('.color-peg').forEach(peg => {
-        peg.addEventListener('click', function () {
-            selectedColor = peg.dataset.color;
-            alert(`Selected color: ${selectedColor}`); // Debugging
-        });
-    });
+    // Handle color selection and auto-fill the next empty peg
+    document.querySelectorAll('.color-peg').forEach(colorPeg => {
+        colorPeg.addEventListener('click', function () {
+            selectedColor = colorPeg.dataset.color;
 
-    // Handle peg coloring
-    document.querySelectorAll('.peg').forEach(peg => {
-        peg.addEventListener('click', function () {
-            if (selectedColor) {
-                peg.style.backgroundColor = selectedColor;
+            // Find the next empty peg
+            const nextEmptyPeg = Array.from(document.querySelectorAll('.peg')).find(peg => !peg.style.backgroundColor);
+
+            if (nextEmptyPeg) {
+                nextEmptyPeg.style.backgroundColor = selectedColor;
+                filledPegs.push(nextEmptyPeg); // Add to the stack
+            } else {
+                alert('All pegs are filled! Submit your guess or clear the board.');
             }
         });
     });
 
-    // Start game
-    document.getElementById('startGame').addEventListener('click', function () {
-        fetch('/start-game', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({})
-        }).then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        }).then(data => {
-            alert(data.message); // Game started successfully
-        }).catch(error => {
-            console.error('Error starting game:', error);
-        });
+    // Clear the last filled peg
+    document.getElementById('resetBoard').addEventListener('click', function () {
+        if (filledPegs.length > 0) {
+            const lastPeg = filledPegs.pop(); // Remove the last peg from the stack
+            lastPeg.style.backgroundColor = ''; // Clear its color
+        } else {
+            alert('No more pegs to clear!');
+        }
     });
 
-    // Check guess functionality (Add your own button for this if needed)
+    // Handle guess submission
     document.getElementById('checkGuess').addEventListener('click', function () {
         const guess = Array.from(document.querySelectorAll('.peg')).map(peg => {
             return peg.style.backgroundColor || null;
@@ -138,40 +131,83 @@
         }).then(data => {
             if (data.message) {
                 alert(data.message); // E.g., "You win!"
-            } else if (data.feedback) {
-                // Create a new table row for feedback
-                const feedbackRow = document.createElement('tr');
+            }
 
-                // Add the turn number (or timestamp)
-                const turnCell = document.createElement('td');
-                turnCell.textContent = new Date().toLocaleTimeString();
-                feedbackRow.appendChild(turnCell);
+            // Display feedback in the table (same as before)
+            const feedbackRow = document.createElement('tr');
 
-                // Add the guess as colored boxes
-                const guessCell = document.createElement('td');
-                guess.forEach(color => {
-                    const colorBox = document.createElement('div');
-                    colorBox.style.backgroundColor = color;
-                    colorBox.style.width = '30px';
-                    colorBox.style.height = '30px';
-                    colorBox.style.display = 'inline-block';
-                    colorBox.style.margin = '0 5px';
-                    guessCell.appendChild(colorBox);
-                });
-                feedbackRow.appendChild(guessCell);
+            // Increment and display the guess count
+            guessCount++;
+            const turnCell = document.createElement('td');
+            turnCell.textContent = guessCount; // Use guess count instead of time
+            feedbackRow.appendChild(turnCell);
 
-                // Add the feedback (use symbols like `*` or `+`)
-                const feedbackCell = document.createElement('td');
-                feedbackCell.textContent = data.feedback; // Example: "****" or "***+"
-                feedbackRow.appendChild(feedbackCell);
+            // Add the guess as colored boxes
+            const guessCell = document.createElement('td');
+            guess.forEach(color => {
+                const colorBox = document.createElement('div');
+                colorBox.style.backgroundColor = color;
+                colorBox.style.width = '30px';
+                colorBox.style.height = '30px';
+                colorBox.style.display = 'inline-block';
+                colorBox.style.margin = '0 5px';
+                guessCell.appendChild(colorBox);
+            });
+            feedbackRow.appendChild(guessCell);
 
-                // Append the row to the guesses table
-                document.getElementById('guesses').appendChild(feedbackRow);
+            // Add the feedback (use symbols like `*` or `+`)
+            const feedbackCell = document.createElement('td');
+            data.feedback.split('').forEach(symbol => {
+                const feedbackIndicator = document.createElement('div');
+                feedbackIndicator.style.width = '15px';
+                feedbackIndicator.style.height = '15px';
+                feedbackIndicator.style.display = 'inline-block';
+                feedbackIndicator.style.margin = '0 2px';
+
+                if (symbol === '*') {
+                    feedbackIndicator.style.backgroundColor = 'green'; // Correct position
+                } else if (symbol === '+') {
+                    feedbackIndicator.style.backgroundColor = 'nigger'; // Correct color, wrong position
+                }
+
+                feedbackCell.appendChild(feedbackIndicator);
+            });
+            feedbackRow.appendChild(feedbackCell);
+
+            // Append the row to the guesses table
+            document.getElementById('guesses').appendChild(feedbackRow);
+
+            // Automatically clear the board
+            clearBoard();
+
+            // Check if we've reached the maximum guesses
+            if (guessCount >= maxGuesses) {
+                alert('Nice Try! You have used all your guesses.');
+                resetGame(); // Restart the game after clicking "OK"
             }
         }).catch(error => {
             console.error('Error checking guess:', error);
         });
     });
+
+    // Function to clear the board
+    function clearBoard() {
+        document.querySelectorAll('.peg').forEach(peg => {
+            peg.style.backgroundColor = ''; // Clear the color
+        });
+        filledPegs.length = 0; // Reset the stack
+    }
+
+    // Function to reset the game after 6 guesses or after winning
+    function resetGame() {
+        // Reset game state
+        guessCount = 0; // Reset the guess count
+        clearBoard(); // Clear the board
+        document.getElementById('guesses').innerHTML = ''; // Clear the feedback table
+        alert('The game is restarting! Click "Start Game" to play again.');
+        // Optionally, trigger the start game API or UI action if needed
+        // fetch('/start-game', {...}); // Uncomment if needed
+    }
 
 </script>
 </body>
