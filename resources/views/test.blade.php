@@ -167,7 +167,7 @@
                 if (symbol === '*') {
                     feedbackIndicator.style.backgroundColor = 'green'; // Correct position
                 } else if (symbol === '+') {
-                    feedbackIndicator.style.backgroundColor = 'nigger'; // Correct color, wrong position
+                    feedbackIndicator.style.backgroundColor = 'orange'; // Correct color, wrong position
                 }
 
                 feedbackCell.appendChild(feedbackIndicator);
