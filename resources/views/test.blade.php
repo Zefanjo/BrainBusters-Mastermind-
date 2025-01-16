@@ -74,8 +74,8 @@
 
 <script>
     let selectedColor = null;
-    const filledPegs = []; // Stack to track the order of filled pegs
     let guessCount = 0; // Counter for the number of guesses
+    const filledPegs = []; // Stack to track the order of filled pegs
     const maxGuesses = 6; // Maximum allowed guesses
 
     // Handle color selection and auto-fill the next empty peg
