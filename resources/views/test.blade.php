@@ -34,8 +34,6 @@
 <body>
 <h1>Mastermind Game</h1>
 
-<button id="startGame">Start Game</button>
-<p>Click "Start Game" to begin. You have 10 turns to guess the correct sequence!</p>
 
 <div>
     <h2>Pick colors for the pegs:</h2>
