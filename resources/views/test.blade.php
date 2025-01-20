@@ -49,7 +49,6 @@
     </div>
 </div>
 
-<!-- Placeholder to show current guesses -->
 <h3>Your Guess:</h3>
 <div>
     <div id="peg1" class="peg"></div>
@@ -58,7 +57,6 @@
     <div id="peg4" class="peg"></div>
 </div>
 
-<!-- Table to show previous guesses and feedback -->
 <table border="1" style="margin: 0 auto; width: 60%; text-align: center;">
     <thead>
     <tr>
@@ -74,38 +72,35 @@
 
 <script>
     let selectedColor = null;
-    let guessCount = 0; // Counter for the number of guesses
-    const filledPegs = []; // Stack to track the order of filled pegs
-    const maxGuesses = 6; // Maximum allowed guesses
+    let guessCount = 0;
+    const filledPegs = [];
+    const maxGuesses = 6;
 
-    // Handle color selection and auto-fill the next empty peg
     document.querySelectorAll('.color-peg').forEach(colorPeg => {
         colorPeg.addEventListener('click', function () {
             selectedColor = colorPeg.dataset.color;
 
-            // Find the next empty peg
             const nextEmptyPeg = Array.from(document.querySelectorAll('.peg')).find(peg => !peg.style.backgroundColor);
 
             if (nextEmptyPeg) {
                 nextEmptyPeg.style.backgroundColor = selectedColor;
-                filledPegs.push(nextEmptyPeg); // Add to the stack
+                filledPegs.push(nextEmptyPeg);
             } else {
                 alert('All pegs are filled! Submit your guess or clear the board.');
             }
         });
     });
 
-    // Clear the last filled peg
     document.getElementById('resetBoard').addEventListener('click', function () {
         if (filledPegs.length > 0) {
-            const lastPeg = filledPegs.pop(); // Remove the last peg from the stack
-            lastPeg.style.backgroundColor = ''; // Clear its color
+            const lastPeg = filledPegs.pop();
+            lastPeg.style.backgroundColor = '';
         } else {
             alert('No more pegs to clear!');
         }
     });
 
-    // Handle guess submission
+
     document.getElementById('checkGuess').addEventListener('click', function () {
         const guess = Array.from(document.querySelectorAll('.peg')).map(peg => {
             return peg.style.backgroundColor || null;
@@ -130,19 +125,16 @@
             return response.json();
         }).then(data => {
             if (data.message) {
-                alert(data.message); // E.g., "You win!"
+                alert(data.message);
             }
 
-            // Display feedback in the table (same as before)
             const feedbackRow = document.createElement('tr');
 
-            // Increment and display the guess count
             guessCount++;
             const turnCell = document.createElement('td');
-            turnCell.textContent = guessCount; // Use guess count instead of time
+            turnCell.textContent = guessCount;
             feedbackRow.appendChild(turnCell);
 
-            // Add the guess as colored boxes
             const guessCell = document.createElement('td');
             guess.forEach(color => {
                 const colorBox = document.createElement('div');
@@ -155,7 +147,6 @@
             });
             feedbackRow.appendChild(guessCell);
 
-            // Add the feedback (use symbols like `*` or `+`)
             const feedbackCell = document.createElement('td');
             data.feedback.split('').forEach(symbol => {
                 const feedbackIndicator = document.createElement('div');
@@ -165,48 +156,40 @@
                 feedbackIndicator.style.margin = '0 2px';
 
                 if (symbol === '*') {
-                    feedbackIndicator.style.backgroundColor = 'green'; // Correct position
+                    feedbackIndicator.style.backgroundColor = 'green';
                 } else if (symbol === '+') {
-                    feedbackIndicator.style.backgroundColor = 'orange'; // Correct color, wrong position
+                    feedbackIndicator.style.backgroundColor = 'orange';
                 }
 
                 feedbackCell.appendChild(feedbackIndicator);
             });
             feedbackRow.appendChild(feedbackCell);
 
-            // Append the row to the guesses table
             document.getElementById('guesses').appendChild(feedbackRow);
 
-            // Automatically clear the board
             clearBoard();
 
-            // Check if we've reached the maximum guesses
             if (guessCount >= maxGuesses) {
                 alert('Nice Try! You have used all your guesses.');
-                resetGame(); // Restart the game after clicking "OK"
+                resetGame();
             }
         }).catch(error => {
             console.error('Error checking guess:', error);
         });
     });
 
-    // Function to clear the board
     function clearBoard() {
         document.querySelectorAll('.peg').forEach(peg => {
-            peg.style.backgroundColor = ''; // Clear the color
+            peg.style.backgroundColor = '';
         });
-        filledPegs.length = 0; // Reset the stack
+        filledPegs.length = 0;
     }
 
-    // Function to reset the game after 6 guesses or after winning
     function resetGame() {
-        // Reset game state
-        guessCount = 0; // Reset the guess count
-        clearBoard(); // Clear the board
-        document.getElementById('guesses').innerHTML = ''; // Clear the feedback table
+        guessCount = 0;
+        clearBoard();
+        document.getElementById('guesses').innerHTML = '';
         alert('The game is restarting! Click "Start Game" to play again.');
-        // Optionally, trigger the start game API or UI action if needed
-        // fetch('/start-game', {...}); // Uncomment if needed
     }
 
 </script>

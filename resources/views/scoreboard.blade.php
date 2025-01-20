@@ -8,16 +8,16 @@
     @vite('resources/css/app.css','resources/js/app.js')
     <title>Scoreboard | Brain Busters</title>
 </head>
-<body>
+<body id="scores">
     <div class="scoreboard">
         <div class="name">
-            Naam
+            Name
         </div>
         <div class="score">
-            Score
+            Turns
         </div>
         <div class="time">
-            Tijd
+            Time
         </div>
     </div>
 </body>

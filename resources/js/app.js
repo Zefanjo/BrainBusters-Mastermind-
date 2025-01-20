@@ -1,9 +1,7 @@
 console.log('works');
 
-// Import necessary dependencies
-import './bootstrap'; // Bootstrap JavaScript (if needed for Laravel Breeze, etc.)
+import './bootstrap';
 
-// Event listener for starting a new game
 document.getElementById("startGame").addEventListener("click", function () {
     fetch('/start-game', {
         method: 'POST',
@@ -20,7 +18,6 @@ document.getElementById("startGame").addEventListener("click", function () {
         .catch(error => console.error('Error:', error));
 });
 
-// Event listener for submitting a guess
 document.getElementById("submitGuess").addEventListener("click", function () {
     const guess = [
         document.getElementById("peg1").value.toLowerCase(),
