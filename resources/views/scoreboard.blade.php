@@ -10,15 +10,20 @@
 </head>
 <body id="scores">
     <div class="scoreboard">
+        @foreach($scores as $score)
         <div class="name">
-            Name
+            Name {{ $score['name'] }}
         </div>
         <div class="score">
-            Turns
+            Turns {{ $score['turns'] }}
+        </div>
+        <div class="won">
+            Won {{ $score['won'] }}
         </div>
         <div class="time">
-            Time
+            Time {{ $score['game_time'] }}
         </div>
+        @endforeach
     </div>
 </body>
 </html>

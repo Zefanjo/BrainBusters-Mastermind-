@@ -2,10 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\game;
 use Illuminate\Http\Request;
 
 class GameController extends Controller
 {
+
+    public function index()
+    {
+        $game = game::all();
+
+        return view('test', ['games' => $game]);
+    }
+
+    public function store(Request $request)
+    {
+        $game = $request->validate([
+            'name' => 'string|required|max:20'
+        ]);
+        $game['user_id'] = auth()->id();
+        $game['name'] = $request->name();
+        $game['turns'] = $request->turns;
+        $game['won'] = $request->won;
+        $game['game_time'] = $request->game_time;
+        $game = new games($game);
+        $game->save();
+        return back();
+    }
     public function startGame(Request $request)
     {
         $colors = ['red', 'green', 'blue', 'yellow', 'black', 'white'];
@@ -74,6 +97,8 @@ class GameController extends Controller
         ]);
     }
 }
+
+
 
 
 
