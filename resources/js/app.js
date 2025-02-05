@@ -1,7 +1,7 @@
 let selectedColor = null;
 const filledPegs = []; // Stack to track the order of filled pegs
 let guessCount = 0; // Counter for the number of guesses
-const maxGuesses = 6; // Maximum allowed guesses
+const maxGuesses = 8; // Maximum allowed guesses
 
 // Start Game Function
 document.addEventListener("DOMContentLoaded", function () {
