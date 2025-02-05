@@ -27,5 +27,9 @@ Route::get('/scoreboard', function () {
     return view('scoreboard');
 });
 
+Route::get('/rules', function () {
+    return view('rules');
+});
+
 Route::post('/start-game', [GameController::class, 'startGame']);
 Route::post('/check-guess', [GameController::class, 'checkGuess']);

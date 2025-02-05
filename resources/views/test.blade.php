@@ -34,7 +34,7 @@
 <body>
 <h1>Mastermind Game</h1>
 
-
+<button id="start-game">Start Game</button>
 <div>
     <h2>Pick colors for the pegs:</h2>
     <div id="colorPalette">
@@ -67,129 +67,5 @@
     </thead>
     <tbody id="guesses"></tbody>
 </table>
-
-<script>
-    let selectedColor = null;
-    let guessCount = 0;
-    const filledPegs = [];
-    const maxGuesses = 6;
-
-    document.querySelectorAll('.color-peg').forEach(colorPeg => {
-        colorPeg.addEventListener('click', function () {
-            selectedColor = colorPeg.dataset.color;
-
-            const nextEmptyPeg = Array.from(document.querySelectorAll('.peg')).find(peg => !peg.style.backgroundColor);
-
-            if (nextEmptyPeg) {
-                nextEmptyPeg.style.backgroundColor = selectedColor;
-                filledPegs.push(nextEmptyPeg);
-            } else {
-                alert('All pegs are filled! Submit your guess or clear the board.');
-            }
-        });
-    });
-
-    document.getElementById('resetBoard').addEventListener('click', function () {
-        if (filledPegs.length > 0) {
-            const lastPeg = filledPegs.pop();
-            lastPeg.style.backgroundColor = '';
-        } else {
-            alert('No more pegs to clear!');
-        }
-    });
-
-
-    document.getElementById('checkGuess').addEventListener('click', function () {
-        const guess = Array.from(document.querySelectorAll('.peg')).map(peg => {
-            return peg.style.backgroundColor || null;
-        });
-
-        if (guess.includes(null)) {
-            alert('Please fill all the pegs before submitting your guess.');
-            return;
-        }
-
-        fetch('/check-guess', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ guess })
-        }).then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        }).then(data => {
-            if (data.message) {
-                alert(data.message);
-            }
-
-            const feedbackRow = document.createElement('tr');
-
-            guessCount++;
-            const turnCell = document.createElement('td');
-            turnCell.textContent = guessCount;
-            feedbackRow.appendChild(turnCell);
-
-            const guessCell = document.createElement('td');
-            guess.forEach(color => {
-                const colorBox = document.createElement('div');
-                colorBox.style.backgroundColor = color;
-                colorBox.style.width = '30px';
-                colorBox.style.height = '30px';
-                colorBox.style.display = 'inline-block';
-                colorBox.style.margin = '0 5px';
-                guessCell.appendChild(colorBox);
-            });
-            feedbackRow.appendChild(guessCell);
-
-            const feedbackCell = document.createElement('td');
-            data.feedback.split('').forEach(symbol => {
-                const feedbackIndicator = document.createElement('div');
-                feedbackIndicator.style.width = '15px';
-                feedbackIndicator.style.height = '15px';
-                feedbackIndicator.style.display = 'inline-block';
-                feedbackIndicator.style.margin = '0 2px';
-
-                if (symbol === '*') {
-                    feedbackIndicator.style.backgroundColor = 'green';
-                } else if (symbol === '+') {
-                    feedbackIndicator.style.backgroundColor = 'orange';
-                }
-
-                feedbackCell.appendChild(feedbackIndicator);
-            });
-            feedbackRow.appendChild(feedbackCell);
-
-            document.getElementById('guesses').appendChild(feedbackRow);
-
-            clearBoard();
-
-            if (guessCount >= maxGuesses) {
-                alert('Nice Try! You have used all your guesses.');
-                resetGame();
-            }
-        }).catch(error => {
-            console.error('Error checking guess:', error);
-        });
-    });
-
-    function clearBoard() {
-        document.querySelectorAll('.peg').forEach(peg => {
-            peg.style.backgroundColor = '';
-        });
-        filledPegs.length = 0;
-    }
-
-    function resetGame() {
-        guessCount = 0;
-        clearBoard();
-        document.getElementById('guesses').innerHTML = '';
-        alert('The game is restarting! Click "Start Game" to play again.');
-    }
-
-</script>
 </body>
 </html>

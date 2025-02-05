@@ -10,19 +10,19 @@ class GameController extends Controller
     {
         $colors = ['red', 'green', 'blue', 'yellow', 'black', 'white'];
 
-        $answer = [
-            $colors[rand(0, 5)],
-            $colors[rand(0, 5)],
-            $colors[rand(0, 5)],
-            $colors[rand(0, 5)],
-        ];
+        shuffle($colors);
+        $answer = array_slice($colors, 0, 4);
+
+        error_log("Generated Answer: " . json_encode($answer)); // Log to server
 
         $request->session()->put('mastermind_answer', $answer);
-
         return response()->json([
             'message' => 'Game started successfully!',
+            'answer' => $answer // Remove this in production
         ]);
     }
+
+
 
     public function checkGuess(Request $request)
     {
