@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Users;
+use App\Models\User;
 use App\Models\game;
 use Illuminate\Auth\Access\Response;
 
@@ -11,7 +11,7 @@ class GamePolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(Users $users): bool
+    public function viewAny(User $user): bool
     {
         return false;
     }
@@ -19,7 +19,7 @@ class GamePolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(Users $users, game $game): bool
+    public function view(User $user, game $game): bool
     {
         return false;
     }
@@ -27,7 +27,7 @@ class GamePolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(Users $users): bool
+    public function create(User $user): bool
     {
         return false;
     }
@@ -35,7 +35,7 @@ class GamePolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(Users $users, game $game): bool
+    public function update(User $user, game $game): bool
     {
         return false;
     }
@@ -43,7 +43,7 @@ class GamePolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(Users $users, game $game): bool
+    public function delete(User $user, game $game): bool
     {
         return false;
     }
@@ -51,7 +51,7 @@ class GamePolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(Users $users, game $game): bool
+    public function restore(User $user, game $game): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class GamePolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(Users $users, game $game): bool
+    public function forceDelete(User $user, game $game): bool
     {
         return false;
     }

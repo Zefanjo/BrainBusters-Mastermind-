@@ -14,15 +14,17 @@
     <h1 class="top-text">Brain Busters</h1>
     @csrf
     <h2>Login</h2>
-    <label for="email"><b>Email</b></label>
-    <input type="text" name="email" id="email">
-    <label for="psw"><b>Password</b></label>
-    <input type="password" name="password" id="psw">
-    <label>
-        <input type="checkbox" name="remember"> Remember me
-    </label><br>
-    <a href="/dashboard">
+    <form method="POST" action="{{ route('login') }}">
+        <label for="email">E-mail</label>
+        <input type="text" placeholder="E-mail" size="30" id="email" name="email" required>
+        <label for="password">Password</label>
+        <input type="password" placeholder="Password" size="30" id="password" name="password" required>
+        <label>
+            <input type="checkbox" name="remember"> Remember me
+        </label><br>
         <button type="submit" class="registerbtn" >Login</button>
+    </form>
+    <a href="/dashboard">
     </a>
     @if($errors->all())
         <div class="errors">

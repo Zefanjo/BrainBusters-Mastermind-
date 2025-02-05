@@ -16,17 +16,19 @@
     <div class="registreren">
         <div class="form">
         <h2>Register</h2>
-        <label for="name"><b>Full Name</b></label>
-        <input type="text" name="name" id="name">
-        <label for="email"><b>Email</b></label>
-        <input type="text" name="email" id="email">
-        <label for="psw"><b>Password</b></label>
-        <input type="password" name="password" id="psw">
-        <label for="psw-repeat"><b>Confirm Password</b></label>
-        <input type="password" name="password_confirmation" id="psw-repeat">
-        <a href="/dashboard/index">
-            <button type="submit" class="registerbtn">Register</button>
-        </a>
+            <form method="POST" action="{{ route('register') }}">
+                <label for="name"><b>Full Name</b></label>
+                <input type="text" name="name" id="name">
+                <label for="email"><b>Email</b></label>
+                <input type="text" name="email" id="email">
+                <label for="psw"><b>Password</b></label>
+                <input type="password" name="password" id="psw">
+                <label for="psw-repeat"><b>Confirm Password</b></label>
+                <input type="password" name="password_confirmation" id="psw-repeat">
+                <a href="/dashboard/index">
+                    <button type="submit" class="registerbtn">Register</button>
+                </a>
+            </form>
         </div>
     </div>
     @if($errors->all())
