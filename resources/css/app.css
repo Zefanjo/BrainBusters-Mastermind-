@@ -11,6 +11,11 @@ body {
     font-family: sans-serif;
     text-align: center;
     background: linear-gradient(-3.25rad, white, gray) no-repeat fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 main {
@@ -85,8 +90,8 @@ main {
 
 .color-peg {
     display: inline-block;
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     cursor: pointer;
     margin: 10px;
 }
@@ -97,3 +102,68 @@ main {
     margin: 10px;
     border: 1px solid #000;
 }
+
+.mastermind-board {
+    display: grid;
+    gap: 10px;
+    background-color: #ffffff;
+    padding: 20px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: solid black 0.3vh;
+}
+
+.guess {
+    display: flex;
+    gap: 10px;
+}
+
+.pin {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    cursor: pointer;
+}
+
+.feedback {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    height: 20px;
+    width: 30px;
+    align-content: center;
+}
+
+.feedback-pin {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+}
+
+.mastermind-button {
+    background-color: #ffffff;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.mastermind-button:hover {
+    background-color: #f0f0f0;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+

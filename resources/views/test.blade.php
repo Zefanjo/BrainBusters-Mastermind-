@@ -6,35 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mastermind Game</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
-        }
-        .guess-inputs {
-            margin: 20px 0;
-        }
-        .color-peg {
-            display: inline-block;
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-            margin: 10px;
-        }
-        .peg {
-            display: inline-block;
-            width: 50px;
-            height: 50px;
-            margin: 10px;
-            border: 1px solid #000;
-        }
-    </style>
 </head>
 <body>
 <h1>Mastermind Game</h1>
 
-<button id="start-game">Start Game</button>
 <div>
     <h2>Pick colors for the pegs:</h2>
     <div id="colorPalette">
