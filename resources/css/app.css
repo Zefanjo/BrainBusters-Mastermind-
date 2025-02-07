@@ -13,8 +13,6 @@ body {
     background: linear-gradient(-3.25rad, white, gray) no-repeat fixed;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     height: 100vh;
 }
 
@@ -94,13 +92,22 @@ main {
     height: 40px;
     cursor: pointer;
     margin: 10px;
+    border: solid black 1px;
 }
+
 .peg {
     display: inline-block;
     width: 50px;
     height: 50px;
     margin: 10px;
     border: 1px solid #000;
+}
+
+.mastermind {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    margin-top: 8px;
 }
 
 .mastermind-board {
@@ -167,3 +174,34 @@ main {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
+.backbtn {
+    display: flex;
+    justify-content: flex-start;
+    align-content: flex-start;
+    background-color: #ffffff;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s, box-shadow 0.2s;
+    margin: 10px;
+}
+
+.backbtn:hover {
+    background-color: #f0f0f0;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.back {
+    display: flex;
+    justify-content: flex-start;
+    align-content: flex-start;
+}
+
+.container2  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
