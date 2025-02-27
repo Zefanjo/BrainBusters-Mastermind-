@@ -14,19 +14,18 @@ class GameController extends Controller
         return view('test', compact('games')); // Pass data to scoreboard view
     }
 
-    public function store(Request $request)
+    public function store($request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:20',
-            'turns' => 'required|integer',
-            'won' => 'required|boolean',
-            'game_time' => 'required|date',
+        $game = $request->validate([
+            'game' => 'string|required|max:20'
         ]);
-
-        $validatedData['user_id'] = Auth::id();
-
-        game::create($validatedData);
-
+        $game['name'] = $request->name;
+        $game['turns'] = $request->turns;
+        $game['won'] = $request->won;
+        $game['game_time'] = $request->game_time;
+        $game['user_id'] = auth()->id();
+        $game = new Game($game);
+        $game->save();
         return back();
     }
 
