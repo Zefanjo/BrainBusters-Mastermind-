@@ -11,7 +11,6 @@ class GameController extends Controller
     public function index()
     {
         $game = game::all();
-
         return view('test', ['games' => $game]);
     }
 
@@ -29,10 +28,9 @@ class GameController extends Controller
         $game->save();
         return back();
     }
-
     public function startGame(Request $request)
     {
-        $colors = ['red', 'orange', 'yellow', 'green', 'lightblue', 'blue'];
+        $colors = ['red', 'green', 'blue', 'yellow', 'black', 'white'];
 
         shuffle($colors);
         $answer = array_slice($colors, 0, 4);
@@ -45,6 +43,8 @@ class GameController extends Controller
             'answer' => $answer // Remove this in production
         ]);
     }
+
+
 
     public function checkGuess(Request $request)
     {
@@ -61,35 +61,29 @@ class GameController extends Controller
         }
 
         $feedback = [];
-        $answerCounts = array_count_values($answer); // Tel hoe vaak elke kleur voorkomt in de geheime code
-        $guessCounts = array_count_values($guess);   // Tel hoe vaak elke kleur voorkomt in de gok
-        $exactMatches = 0;
-        $partialMatches = 0;
+        $tempAnswer = $answer;
 
-        // 🔹 Eerste loop: Zoek exacte matches (juiste kleur én positie)
         for ($i = 0; $i < 4; $i++) {
-            if ($guess[$i] === $answer[$i]) {
-                $exactMatches++;
-                $answerCounts[$guess[$i]]--; // Verminder de teller voor deze kleur
-                $guessCounts[$guess[$i]]--;
+            if ($guess[$i] === $tempAnswer[$i]) {
+                $feedback[] = '*';
+                $tempAnswer[$i] = null;
+                $guess[$i] = null;
             }
         }
 
-        // 🔹 Tweede loop: Zoek juiste kleur, verkeerde positie
-        foreach ($guessCounts as $color => $count) {
-            if (isset($answerCounts[$color]) && $answerCounts[$color] > 0) {
-                // Tel het minimum aantal voor correcte kleuren op de verkeerde plek
-                $partialMatches += min($answerCounts[$color], $count);
+        for ($i = 0; $i < 4; $i++) {
+            if ($guess[$i] !== null) {
+                $index = array_search($guess[$i], $tempAnswer);
+                if ($index !== false) {
+                    $feedback[] = '+';
+                    $tempAnswer[$index] = null;
+                }
             }
         }
 
-        // Voeg de juiste symbolen toe
-        $feedback = array_merge(array_fill(0, $exactMatches, '*'), array_fill(0, $partialMatches, '+'));
-
-        // Sorteer de feedback zodat het consistent is
         sort($feedback);
 
-        if ($exactMatches === 4) {
+        if (implode('', $feedback) === '****') {
             return response()->json([
                 'message' => 'You win!',
                 'answer' => $answer,
@@ -100,4 +94,16 @@ class GameController extends Controller
         return response()->json([
             'feedback' => implode('', $feedback),
         ]);
-    }}
+    }
+}
+
+
+
+
+
+
+
+
+
+
+

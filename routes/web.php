@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ScoreController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GameController;
 
@@ -29,3 +30,8 @@ Route::get('/rules', function () {
 
 Route::post('/start-game', [GameController::class, 'startGame']);
 Route::post('/check-guess', [GameController::class, 'checkGuess']);
+Route::get('/scoreboard', [ScoreController::class, 'showScoreboard']);
+
+
+Route::get('/scoreboard-data', [ScoreController::class, 'getTopScores']);
+
