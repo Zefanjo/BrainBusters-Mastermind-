@@ -2,33 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\game; // Ensure it's using the correct model
+use App\Models\game;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class GameController extends Controller
 {
+
     public function index()
     {
-        $games = game::orderBy('game_time', 'desc')->get();
-        return view('test', compact('games')); // Pass data to scoreboard view
+        $game = game::all();
+        return view('test', ['games' => $game]);
     }
 
-    public function store($request)
+    public function store(Request $request)
     {
         $game = $request->validate([
-            'game' => 'string|required|max:20'
+            'name' => 'string|required|max:20'
         ]);
-        $game['name'] = $request->name;
+        $game['user_id'] = auth()->id();
+        $game['name'] = $request->name();
         $game['turns'] = $request->turns;
         $game['won'] = $request->won;
         $game['game_time'] = $request->game_time;
-        $game['user_id'] = auth()->id();
-        $game = new Game($game);
+        $game = new games($game);
         $game->save();
         return back();
     }
-
     public function startGame(Request $request)
     {
         $colors = ['red', 'orange', 'yellow', 'green', 'blue', 'lightblue'];
@@ -36,13 +35,16 @@ class GameController extends Controller
         shuffle($colors);
         $answer = array_slice($colors, 0, 4);
 
-        $request->session()->put('mastermind_answer', $answer);
-        $request->session()->put('turns', 0); // Track turns
+        error_log("Generated Answer: " . json_encode($answer)); // Log to server
 
+        $request->session()->put('mastermind_answer', $answer);
         return response()->json([
             'message' => 'Game started successfully!',
+            'answer' => $answer // Remove this in production
         ]);
     }
+
+
 
     public function checkGuess(Request $request)
     {
@@ -80,18 +82,8 @@ class GameController extends Controller
         }
 
         sort($feedback);
-        $turns = $request->session()->increment('turns');
 
-        // If the player wins
         if (implode('', $feedback) === '****') {
-            game::create([
-                'user_id' => Auth::id(),
-                'name' => Auth::user()->name ?? 'Guest',
-                'turns' => $turns,
-                'won' => true,
-                'game_time' => now(),
-            ]);
-
             return response()->json([
                 'message' => 'You win!',
                 'answer' => $answer,
@@ -99,25 +91,19 @@ class GameController extends Controller
             ]);
         }
 
-        // If the player loses after 10 turns
-        if ($turns >= 10) {
-            game::create([
-                'user_id' => Auth::id(),
-                'name' => Auth::user()->name ?? 'Guest',
-                'turns' => $turns,
-                'won' => false,
-                'game_time' => now(),
-            ]);
-
-            return response()->json([
-                'message' => 'Out of turns! You lose!',
-                'answer' => $answer,
-            ]);
-        }
-
         return response()->json([
             'feedback' => implode('', $feedback),
-            'turns' => $turns,
         ]);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
