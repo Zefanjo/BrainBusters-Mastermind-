@@ -31,7 +31,7 @@ class GameController extends Controller
 
     public function startGame(Request $request)
     {
-        $colors = ['red', 'green', 'blue', 'yellow', 'black', 'white'];
+        $colors = ['red', 'orange', 'yellow', 'green', 'blue', 'lightblue'];
 
         shuffle($colors);
         $answer = array_slice($colors, 0, 4);
