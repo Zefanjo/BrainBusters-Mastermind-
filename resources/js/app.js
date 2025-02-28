@@ -54,7 +54,7 @@ document.getElementById('resetBoard').addEventListener('click', function () {
 document.getElementById('checkGuess').addEventListener('click', function () {
     const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
     if (!csrfTokenMeta) {
-        console.error('CSRF token not found in meta tags.');
+        console.error('CSRF token not found.');
         alert('CSRF token is missing. Please refresh the page.');
         return;
     }
@@ -91,13 +91,25 @@ document.getElementById('checkGuess').addEventListener('click', function () {
                 alert(data.message); // "You win!" or similar
             }
 
-            // Display feedback
+            // 🔥 Fix: Improved feedback logic to count duplicates correctly
             const feedbackPins = currentRow.querySelectorAll('.feedback-pin');
-            data.feedback.split('').forEach((symbol, index) => {
+
+            // Convert feedback string into an array (so we can count multiple instances properly)
+            let feedbackArray = data.feedback.split('');
+            let assignedIndices = new Set(); // Track which indices have been assigned feedback
+
+            feedbackArray.forEach((symbol, index) => {
                 if (symbol === '*') {
                     feedbackPins[index].style.backgroundColor = 'green'; // Correct spot
-                } else if (symbol === '+') {
-                    feedbackPins[index].style.backgroundColor = 'orange'; // Correct color, wrong spot
+                    assignedIndices.add(index);
+                }
+            });
+
+            // Second pass for '+' to prevent double-counting
+            feedbackArray.forEach((symbol, index) => {
+                if (symbol === '+' && !assignedIndices.has(index)) {
+                    feedbackPins[index].style.backgroundColor = 'yellow'; // Correct color, wrong spot
+                    assignedIndices.add(index);
                 }
             });
 
@@ -110,7 +122,6 @@ document.getElementById('checkGuess').addEventListener('click', function () {
         })
         .catch(error => console.error('Error checking guess:', error));
 });
-
 
 function resetGame() {
     guessCount = 0;
