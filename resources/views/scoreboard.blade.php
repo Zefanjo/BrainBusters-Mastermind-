@@ -35,15 +35,7 @@
     </tr>
     </thead>
     <tbody id="scoreboard-body">
-    @foreach ($topScores as $index => $score)
-        <tr>
-            <td>{{ $index + 1 }}</td>
-            <td>{{ $score->user_id ? 'User ' . $score->user_id : 'Guest' }}</td>
-            <td>{{ $score->turns }}</td>
-            <td>{{ $score->won ? 'Won' : 'Lost' }}</td>
-            <td>{{ $score->game_time }}</td>
-        </tr>
-    @endforeach
+        <tr><td colspan="5">LOADING...</td></tr>
     </tbody>
 </table>
 
@@ -52,16 +44,16 @@
         fetch('/scoreboard-data')
             .then(response => response.json())
             .then(data => {
-                // Sort scores by the lowest number of turns (best scores)
-                data.sort((a, b) => a.turns - b.turns);
+                console.log(data);
+                // data.sort((a, b) => a.turns - b.turns);
 
                 let tbody = document.getElementById("scoreboard-body");
-                tbody.innerHTML = ""; // Clear existing rows
+                tbody.innerHTML = "";
 
-                data.slice(0, 10).forEach((score, index) => {
+                data.forEach((score, index) => {
                     let row = `<tr>
                             <td>${index + 1}</td>
-                            <td>${score.user_id ? 'User ' + score.user_id : 'Guest'}</td>
+                            <td>${score.user ? score.user.name : 'Guest'}</td>
                             <td>${score.turns}</td>
                             <td>${score.won ? 'Won' : 'Lost'}</td>
                             <td>${score.game_time}</td>
@@ -70,8 +62,8 @@
                 });
             });
     }
-
-    setInterval(fetchScores, 5000); // Refresh scores every 5 seconds
+    fetchScores()
+    setInterval(fetchScores, 5000);
 </script>
 </body>
 </html>

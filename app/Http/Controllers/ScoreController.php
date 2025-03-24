@@ -10,26 +10,23 @@ class ScoreController extends Controller
 {
     public function index()
     {
-        $score = game::all();
-
-        return view('scoreboard', ['scores' => $score]);
-    }
-
-    public function showScoreboard()
-    {
         $topScores = Game::where('won', true)
-            ->orderBy('turns', 'asc') // Best scores first
+            ->orderBy('turns', 'asc')
+            ->orderBy('game_time', 'asc')
             ->limit(10)
             ->get();
 
-        return view('scoreboard', ['topScores' => $topScores]); // Pass to the Blade view
+        return view('scoreboard', ['topScores' => $topScores]);
     }
+
 
 
     public function getTopScores()
     {
         $topScores = Game::where('won', true)
-            ->orderBy('turns', 'asc') // Best scores first
+            ->with('user')
+            ->orderBy('turns', 'asc')
+            ->orderBy('game_time', 'asc')
             ->limit(10)
             ->get();
 

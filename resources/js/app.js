@@ -1,57 +1,61 @@
 let selectedColor = null;
-let filledPegs = []; // Tracks the order of filled pegs per row
-let guessCount = 0; // Keeps track of how many guesses have been made
-const maxGuesses = 8; // Max number of allowed guesses
+let filledPegs = [];
+let guessCount = 0;
+const maxGuesses = 8;
+let gameOver = false;
+let startTime = null;
 
 document.addEventListener("DOMContentLoaded", function () {
-    fetch('/start-game', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        }
-    })
-        .then(response => response.json())
-        .then(data => console.log("Generated Code:", data.answer)) // Debugging
-        .catch(error => console.error('Error starting game:', error));
+    startNewGame();
 });
 
-// Handle color selection
 document.querySelectorAll('.color-peg').forEach(colorPeg => {
     colorPeg.addEventListener('click', function () {
+        if (gameOver) {
+            alert("Game is over! Please start a new game.");
+            return;
+        }
+
         selectedColor = colorPeg.dataset.color;
 
-        // Get the current row to fill
         const currentRow = document.querySelectorAll('.row')[guessCount];
         if (!currentRow) {
             alert("You've used all your guesses!");
             return;
         }
 
-        // Find the next empty peg in the current row
         const nextEmptyPeg = Array.from(currentRow.querySelectorAll('.pin')).find(peg => !peg.style.backgroundColor);
 
         if (nextEmptyPeg) {
             nextEmptyPeg.style.backgroundColor = selectedColor;
-            filledPegs.push(nextEmptyPeg); // Track for reset
+            filledPegs.push(nextEmptyPeg);
         } else {
             alert('Row is full! Submit your guess or clear the last peg.');
         }
     });
 });
 
-// Clear the last filled peg
 document.getElementById('resetBoard').addEventListener('click', function () {
+    if (gameOver) return;
+
+    const currentRow = document.querySelectorAll('.row')[guessCount];
+    if (!currentRow) return;
+
     if (filledPegs.length > 0) {
         const lastPeg = filledPegs.pop();
-        lastPeg.style.backgroundColor = ''; // Clear peg color
+        if (currentRow.contains(lastPeg)) {
+            lastPeg.style.backgroundColor = '';
+        } else {
+            alert('You can only reset the current row!');
+        }
     } else {
         alert('No pegs to clear!');
     }
 });
 
-// Handle guess submission
 document.getElementById('checkGuess').addEventListener('click', function () {
+    if (gameOver) return;
+
     const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
     if (!csrfTokenMeta) {
         console.error('CSRF token not found.');
@@ -72,13 +76,15 @@ document.getElementById('checkGuess').addEventListener('click', function () {
         return;
     }
 
+    let gameTime = Math.floor((Date.now() - startTime) / 1000);
+
     fetch('/check-guess', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': csrfToken
         },
-        body: JSON.stringify({ guess })
+        body: JSON.stringify({ guess, won: true, game_time: gameTime, turns: guessCount + 1 })
     })
         .then(response => response.json())
         .then(data => {
@@ -88,27 +94,24 @@ document.getElementById('checkGuess').addEventListener('click', function () {
             }
 
             if (data.message) {
-                alert(data.message); // "You win!" or similar
+                alert(data.message);
+                gameOver = true;
             }
 
-            // 🔥 Fix: Improved feedback logic to count duplicates correctly
             const feedbackPins = currentRow.querySelectorAll('.feedback-pin');
-
-            // Convert feedback string into an array (so we can count multiple instances properly)
             let feedbackArray = data.feedback.split('');
-            let assignedIndices = new Set(); // Track which indices have been assigned feedback
+            let assignedIndices = new Set();
 
             feedbackArray.forEach((symbol, index) => {
                 if (symbol === '*') {
-                    feedbackPins[index].style.backgroundColor = 'green'; // Correct spot
+                    feedbackPins[index].style.backgroundColor = 'green';
                     assignedIndices.add(index);
                 }
             });
 
-            // Second pass for '+' to prevent double-counting
             feedbackArray.forEach((symbol, index) => {
                 if (symbol === '+' && !assignedIndices.has(index)) {
-                    feedbackPins[index].style.backgroundColor = 'yellow'; // Correct color, wrong spot
+                    feedbackPins[index].style.backgroundColor = 'yellow';
                     assignedIndices.add(index);
                 }
             });
@@ -117,15 +120,20 @@ document.getElementById('checkGuess').addEventListener('click', function () {
 
             if (guessCount >= maxGuesses) {
                 alert('Game over! Maximum attempts reached.');
-                resetGame();
+                gameOver = true;
             }
+
+            filledPegs = [];
         })
         .catch(error => console.error('Error checking guess:', error));
 });
 
-function resetGame() {
+function startNewGame() {
     guessCount = 0;
     filledPegs = [];
+    gameOver = false;
+    startTime = Date.now();
+
     document.querySelectorAll('.pin').forEach(peg => peg.style.backgroundColor = '');
     document.querySelectorAll('.feedback-pin').forEach(pin => pin.style.backgroundColor = '');
 
@@ -140,3 +148,4 @@ function resetGame() {
         .then(data => console.log("New Generated Code:", data.answer))
         .catch(error => console.error('Error resetting game:', error));
 }
+

@@ -30,7 +30,6 @@ Route::get('/rules', function () {
 
 Route::post('/start-game', [GameController::class, 'startGame']);
 Route::post('/check-guess', [GameController::class, 'checkGuess']);
-Route::get('/scoreboard', [ScoreController::class, 'showScoreboard']);
 
 
 Route::get('/scoreboard-data', [ScoreController::class, 'getTopScores']);

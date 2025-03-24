@@ -16,17 +16,20 @@ class GameController extends Controller
 
     public function store(Request $request)
     {
-        $game = $request->validate([
-            'name' => 'string|required|max:20'
+        $validated = $request->validate([
+            'turns' => 'required',
+            'won' => 'required',
+            'game_time' => 'required',
         ]);
-        $game['user_id'] = auth()->id();
-        $game['name'] = $request->name();
-        $game['turns'] = $request->turns;
-        $game['won'] = $request->won;
-        $game['game_time'] = $request->game_time;
-        $game = new games($game);
+        $game = new game();
+        $game->user_id = auth()->id();
+//        $game->name = auth()->user()->name;
+        $game->turns = $validated['turns'];
+        $game->won = $validated['won'];
+        $game->game_time = $validated['game_time'];
         $game->save();
-        return back();
+
+//        return back();
     }
     public function startGame(Request $request)
     {
@@ -35,12 +38,12 @@ class GameController extends Controller
         shuffle($colors);
         $answer = array_slice($colors, 0, 4);
 
-        error_log("Generated Answer: " . json_encode($answer)); // Log to server
+        error_log("Generated Answer: " . json_encode($answer));
 
         $request->session()->put('mastermind_answer', $answer);
         return response()->json([
             'message' => 'Game started successfully!',
-            'answer' => $answer // Remove this in production
+            'answer' => $answer
         ]);
     }
 
@@ -84,6 +87,9 @@ class GameController extends Controller
         sort($feedback);
 
         if (implode('', $feedback) === '****') {
+
+            $this->store($request);
+
             return response()->json([
                 'message' => 'You win!',
                 'answer' => $answer,
