@@ -16,7 +16,6 @@
     </div>
     <div class="mastermind">
         <div class="mastermind-board">
-            <!-- Example of 10 rows -->
             <div>
                 <div class="row">
                     <div class="guess">
@@ -154,8 +153,6 @@
                 </div>
             </div>
         </div>
-        <!-- Duplicate the rows as needed -->
-        <!-- Add more rows dynamically with JavaScript if necessary -->
     </div>
 </div>
 </body>
