@@ -13,7 +13,11 @@ Route::get('welcome', function () {
 });
 
 Route::get('/game', function () {
-    return view('index');
+    return view('game');
+});
+
+Route::get('/profile', function () {
+    return view('profile');
 });
 
 Route::get('/login', [\App\Http\Controllers\UserController::class, 'index'])->name('login');
