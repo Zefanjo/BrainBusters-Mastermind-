@@ -1,10 +1,11 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Rules | Brain Busters</title>
-    @vite('resources/css/auth.css','resources/js/auth.js')
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastermind Board</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
 
