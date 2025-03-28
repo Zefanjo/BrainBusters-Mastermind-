@@ -23,13 +23,10 @@ class GameController extends Controller
         ]);
         $game = new game();
         $game->user_id = auth()->id();
-//        $game->name = auth()->user()->name;
         $game->turns = $validated['turns'];
         $game->won = $validated['won'];
         $game->game_time = $validated['game_time'];
         $game->save();
-
-//        return back();
     }
     public function startGame(Request $request)
     {

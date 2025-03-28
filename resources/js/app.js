@@ -144,8 +144,6 @@ function startNewGame() {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         }
     })
-        .then(response => response.json())
-        .then(data => console.log("New Generated Code:", data.answer))
-        .catch(error => console.error('Error resetting game:', error));
+
 }
 
