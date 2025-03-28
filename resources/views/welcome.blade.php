@@ -17,10 +17,10 @@
 </div>
 <div class="container">
     <div class="button-box">
-            <a href="game"><button class="buttons">Start</button></a>
-            <a href="scoreboard"><button class="buttons">Scoreboard</button></a>
-            <a href="rules"><button class="buttons">Rules</button></a>
-            <a href="login"><button class="buttons">Profile</button></a>
+        <a href="game"><button class="buttons">Start</button></a>
+        <a href="scoreboard"><button class="buttons">Scoreboard</button></a>
+        <a href="rules"><button class="buttons">Rules</button></a>
+        <a href="profile"><button class="buttons">Profile</button></a>
     </div>
 </div>
 </body>

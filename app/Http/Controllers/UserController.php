@@ -56,7 +56,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-
+        return view('/profile');
     }
 
     /**
@@ -64,7 +64,11 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->password;
+        $user->save();
+        return redirect('/profile');
     }
 
     /**
@@ -75,5 +79,10 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('login');
+    }
+
+    public function profile()
+    {
+        return view('profile');
     }
 }
