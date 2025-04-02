@@ -22,7 +22,11 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            request()->validate([
+                'name' => 'required|string',
+                'email' => 'email',
+                'password' => 'required|min:8',
+                ])
         ];
     }
 }

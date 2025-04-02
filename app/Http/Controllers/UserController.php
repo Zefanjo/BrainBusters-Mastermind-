@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -62,11 +63,13 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request)
     {
+//        dd($request->all());
+        $user = auth()->user();
         $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = $request->password;
+        $user->password = Hash::make($request->password);
+
         $user->save();
         return redirect('/profile');
     }
@@ -77,12 +80,17 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
-
         return redirect()->route('login');
     }
 
     public function profile()
     {
         return view('profile');
+    }
+
+    public  function logout()
+    {
+        auth()->logout();
+        return redirect()->route('login');
     }
 }

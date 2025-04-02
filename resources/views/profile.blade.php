@@ -20,21 +20,18 @@
     <form action="{{ route('profile.update') }}" method="post" class="editform">
         @csrf
         @method('put')
-        <label for="username">Change Username:</label>
-        <input type="text" name="username" placeholder="Username" required>
-        <button type="submit">Save</button>
-    </form>
-
-    <form action="{{ route('profile.update') }}" method="post" class="editform">
-        @csrf
-        @method('put')
+        <label for="name">Change Username:</label>
+        <input type="text" name="name" placeholder="Username" required>
         <label for="password">Change Password:</label>
         <input type="password" name="password" placeholder="New Password" required>
         <button type="submit">Save</button>
     </form>
 
-    <a href="/profile">wat</a>
-    @if($errors->all())
+    <form METHOD="POST" action="{{route("logout")}}">
+        @csrf
+        <button class="custom-button">Logout</button>
+    </form>
+        @if($errors->all())
         <div class="errors">
             @foreach($errors->all() as $error)
                 <p>{{$error}}</p>

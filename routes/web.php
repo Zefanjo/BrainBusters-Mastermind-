@@ -34,7 +34,10 @@ Route::get('/rules', function () {
 
 Route::post('/start-game', [GameController::class, 'startGame']);
 Route::post('/check-guess', [GameController::class, 'checkGuess']);
-
-
 Route::get('/scoreboard-data', [ScoreController::class, 'getTopScores']);
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [\App\Http\Controllers\UserController::class, 'profile'])->name('profile');
+    Route::put('/profile', [\App\Http\Controllers\UserController::class, 'update'])->name('profile.update');
+    Route::post('/logout', [\App\Http\Controllers\UserController::class, 'logout'])->name('logout');
+});
